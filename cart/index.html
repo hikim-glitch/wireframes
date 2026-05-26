@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase02 카트 와이어프레임 (현 디자인 기반)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --bg: #f5f5f0;
+    --frame-bg: #ffffff;
+    --line: #1a1a1a;
+    --line-soft: #e0e0d8;
+    --text: #1a1a1a;
+    --text-soft: #666;
+    --text-mute: #999;
+    --accent: #e84033;
+    --tag-bg: #f8f6f0;
+    --notice-bg: #ffe8e0;
+    --notice-bg-changed: #e8f5e9;
+    --jp-blue: #4a90c8;
+    --jp-blue-bg: #e8f3fb;
+    --kr-green: #5db075;
+    --kr-green-bg: #e8f5ec;
+    --general-gray: #999;
+    --general-bg: #f0f0ed;
+    --change-bg: #fff8e1;
+    --change-border: #f9a825;
+    --remove-bg: #ffebee;
+    --remove-border: #e57373;
+  }
+  
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans JP', 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 32px 16px 80px;
+    min-height: 100vh;
+  }
+  
+  .header {
+    max-width: 1100px;
+    margin: 0 auto 28px;
+  }
+  
+  .header .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  
+  .header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 8px;
+  }
+  
+  .header .accent-line {
+    width: 36px;
+    height: 3px;
+    background: var(--accent);
+    margin: 14px 0;
+  }
+  
+  .header .sub {
+    font-size: 13px;
+    color: var(--text-soft);
+  }
+  
+  /* Layout */
+  .layout {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 410px 1fr;
+    gap: 36px;
+    align-items: start;
+  }
+  
+  /* Mobile frame */
+  .frame {
+    width: 390px;
+    background: var(--frame-bg);
+    border: 2px solid var(--line);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 6px 6px 0 var(--line);
+    position: sticky;
+    top: 20px;
+  }
+  
+  .notch {
+    height: 22px;
+    background: var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+  }
+  
+  /* Screen header */
+  .screen-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .screen-header .back {
+    font-size: 20px;
+    color: var(--text);
+  }
+  
+  .screen-header h2 {
+    font-size: 17px;
+    font-weight: 700;
+    flex: 1;
+    text-align: center;
+  }
+  
+  .screen-header .actions {
+    display: flex;
+    gap: 12px;
+    font-size: 16px;
+  }
+  
+  /* Scrollable content */
+  .content {
+    height: 640px;
+    overflow-y: auto;
+    background: var(--frame-bg);
+  }
+  
+  .content::-webkit-scrollbar { width: 4px; }
+  .content::-webkit-scrollbar-thumb { background: var(--line-soft); border-radius: 2px; }
+  
+  /* CHANGED Notice (top) */
+  .top-notice {
+    background: var(--notice-bg-changed);
+    padding: 12px 16px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--text);
+    border-left: 3px solid #4a9d5e;
+    position: relative;
+  }
+  
+  .top-notice .change-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    background: #4a9d5e;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    margin-right: 6px;
+    vertical-align: 1px;
+  }
+  
+  /* Tabs */
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--line-soft);
+    background: var(--frame-bg);
+    overflow-x: auto;
+    padding: 0 4px;
+  }
+  
+  .tabs::-webkit-scrollbar { display: none; }
+  
+  .tab {
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--text-soft);
+    white-space: nowrap;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .tab.active {
+    color: var(--text);
+    font-weight: 700;
+  }
+  
+  .tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 14px;
+    right: 14px;
+    height: 2px;
+    background: var(--text);
+  }
+  
+  /* Cart actions */
+  .cart-actions {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  
+  .cart-clear {
+    padding: 6px 10px;
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    background: #fff;
+    font-size: 11px;
+    color: var(--text-soft);
+  }
+  
+  .coupon-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--accent);
+  }
+  
+  .toggle-switch {
+    width: 30px;
+    height: 16px;
+    background: #ccc;
+    border-radius: 8px;
+    position: relative;
+  }
+  
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+  }
+  
+  .toggle-switch.on { background: var(--accent); }
+  .toggle-switch.on::after { left: 16px; }
+  
+  /* Shipping group */
+  .ship-group {
+    padding: 14px 0 0;
+    border-bottom: 6px solid var(--bg);
+  }
+  
+  .group-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px 6px;
+  }
+  
+  .group-header .check {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--line);
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  
+  .group-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  
+  .group-badge.jp { background: var(--jp-blue-bg); color: var(--jp-blue); }
+  .group-badge.kr { background: var(--kr-green-bg); color: var(--kr-green); }
+  .group-badge.general { background: var(--general-bg); color: #555; }
+  
+  .group-info {
+    padding: 0 16px 10px 42px;
+    font-size: 11px;
+    color: var(--text-soft);
+  }
+  
+  .group-info.jp { color: var(--jp-blue); }
+  .group-info.kr { color: var(--kr-green); }
+  
+  /* Product item */
+  .item-row {
+    display: flex;
+    gap: 10px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--line-soft);
+  }
+  
+  .item-row .check {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--line);
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  
+  .item-row .thumb {
+    width: 64px;
+    height: 78px;
+    background: var(--line-soft);
+    border-radius: 4px;
+    flex-shrink: 0;
+    position: relative;
+    background-image: linear-gradient(45deg, transparent 45%, #c0c0b8 45%, #c0c0b8 55%, transparent 55%);
+  }
+  
+  .item-row .body {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+  }
+  
+  .item-row .name {
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--text);
+    padding-right: 18px;
+    margin-bottom: 4px;
+  }
+  
+  .item-row .tags {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+  
+  .item-row .item-tag {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-weight: 700;
+  }
+  
+  .item-row .item-tag.jp { background: var(--jp-blue-bg); color: var(--jp-blue); }
+  .item-row .item-tag.kr { background: var(--kr-green-bg); color: var(--kr-green); }
+  .item-row .item-tag.general { background: var(--general-bg); color: #555; }
+  
+  .item-row .meta {
+    font-size: 10px;
+    color: var(--text-mute);
+  }
+  
+  .item-row .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    color: var(--text-mute);
+    font-size: 14px;
+    line-height: 1;
+  }
+  
+  /* Item detail */
+  .item-detail {
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--tag-bg);
+    margin: 0 16px;
+    border-radius: 4px;
+    margin-top: -4px;
+    margin-bottom: 4px;
+    font-size: 12px;
+  }
+  
+  .item-detail .opt-btn {
+    padding: 4px 10px;
+    border: 1px solid var(--line-soft);
+    background: #fff;
+    border-radius: 3px;
+    font-size: 11px;
+    color: var(--text-soft);
+  }
+  
+  /* Item price */
+  .item-price {
+    padding: 0 16px 10px;
+  }
+  
+  .sale-end {
+    display: block;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  
+  .price-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 6px;
+    font-size: 13px;
+  }
+  
+  .price-row .discount-pct {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  
+  .price-row .original-price {
+    color: var(--text-mute);
+    text-decoration: line-through;
+    font-size: 12px;
+  }
+  
+  .price-row .final-price {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  
+  /* Group subtotal */
+  .group-subtotal {
+    padding: 14px 16px;
+    text-align: center;
+    border-top: 1px solid var(--line-soft);
+    font-size: 12px;
+  }
+  
+  .group-subtotal .calc {
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  
+  .group-subtotal .free-info {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  
+  /* REMOVED group order button */
+  .removed-section {
+    padding: 12px 16px;
+    margin: 0 16px 12px;
+    background: var(--remove-bg);
+    border: 1.5px dashed var(--remove-border);
+    border-radius: 6px;
+    text-align: center;
+  }
+  
+  .removed-section .remove-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    background: var(--remove-border);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  
+  .removed-section .removed-btn {
+    text-decoration: line-through;
+    color: var(--text-mute);
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  
+  .removed-section .removed-reason {
+    font-size: 10px;
+    color: var(--text-soft);
+    font-style: italic;
+  }
+  
+  /* Recommended */
+  .recommended {
+    padding: 20px 16px 16px;
+    border-top: 6px solid var(--bg);
+  }
+  
+  .recommended h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  
+  .recommended .desc {
+    font-size: 11px;
+    color: var(--text-soft);
+    margin-bottom: 10px;
+  }
+  
+  .recommended .carousel {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+  }
+  
+  .rec-item {
+    flex: 0 0 100px;
+  }
+  
+  .rec-item .thumb {
+    width: 100px;
+    height: 120px;
+    background: var(--line-soft);
+    border-radius: 4px;
+    background-image: linear-gradient(45deg, transparent 45%, #c0c0b8 45%, #c0c0b8 55%, transparent 55%);
+  }
+  
+  .rec-item .name {
+    font-size: 10px;
+    margin-top: 4px;
+    color: var(--text);
+  }
+  
+  .rec-item .price {
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  
+  /* Final summary */
+  .final-summary {
+    padding: 16px;
+    background: var(--frame-bg);
+    border-top: 6px solid var(--bg);
+  }
+  
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 13px;
+  }
+  
+  .summary-row.total {
+    border-top: 1px solid var(--line-soft);
+    padding-top: 10px;
+    margin-top: 8px;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  
+  .summary-row.total .val { color: var(--accent); }
+  
+  .free-banner {
+    padding: 14px 12px;
+    margin-top: 12px;
+    background: var(--notice-bg);
+    border-radius: 6px;
+    text-align: center;
+    font-size: 12px;
+  }
+  
+  .free-banner .main {
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  
+  .free-banner .sub {
+    color: var(--text-soft);
+    font-size: 10px;
+  }
+  
+  .extra-note {
+    font-size: 10px;
+    color: var(--text-mute);
+    text-align: center;
+    line-height: 1.5;
+    margin-top: 8px;
+  }
+  
+  /* Sticky bottom */
+  .sticky-bottom {
+    position: sticky;
+    bottom: 0;
+    background: var(--frame-bg);
+    border-top: 1px solid var(--line-soft);
+    padding: 12px 16px 16px;
+    z-index: 10;
+  }
+  
+  .sticky-bottom .removed-note {
+    background: var(--remove-bg);
+    border: 1.5px dashed var(--remove-border);
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 10px;
+    color: var(--text-soft);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  
+  .sticky-bottom .removed-note .remove-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    background: var(--remove-border);
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    margin-right: 6px;
+    vertical-align: 1px;
+  }
+  
+  .sticky-bottom .removed-note .strike {
+    text-decoration: line-through;
+    color: var(--text-mute);
+  }
+  
+  .cta-button {
+    background: var(--line);
+    color: #fff;
+    width: 100%;
+    padding: 14px;
+    border-radius: 6px;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  
+  /* Change badge inline */
+  .inline-change {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    background: var(--change-border);
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    margin-left: 4px;
+    vertical-align: 1px;
+  }
+  
+  /* Side panel */
+  .side-panel {
+    background: var(--frame-bg);
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    padding: 24px;
+  }
+  
+  .side-panel h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  
+  .side-panel h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  
+  .change-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .change-list > li {
+    padding: 16px 0;
+    border-top: 1px solid var(--line-soft);
+  }
+  
+  .change-list > li:first-child {
+    padding-top: 0;
+    border-top: none;
+  }
+  
+  .change-list .change-num {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    background: var(--line);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-right: 8px;
+    letter-spacing: 1px;
+  }
+  
+  .change-list .change-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  
+  .change-list .change-detail {
+    margin-left: 38px;
+    font-size: 12px;
+    color: var(--text-soft);
+    line-height: 1.7;
+  }
+  
+  .change-list .change-detail .asis,
+  .change-list .change-detail .tobe {
+    display: block;
+    padding: 6px 10px;
+    margin-top: 6px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+  
+  .change-list .change-detail .asis {
+    background: var(--remove-bg);
+    color: var(--text-soft);
+    border-left: 2px solid var(--remove-border);
+  }
+  
+  .change-list .change-detail .tobe {
+    background: var(--notice-bg-changed);
+    color: var(--text);
+    border-left: 2px solid #4a9d5e;
+  }
+  
+  .change-list .change-detail strong {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    margin-right: 4px;
+    padding: 1px 4px;
+    border-radius: 2px;
+    background: var(--frame-bg);
+    color: var(--text);
+  }
+  
+  .preservation {
+    margin-top: 24px;
+    padding: 16px;
+    background: var(--tag-bg);
+    border-radius: 6px;
+  }
+  
+  .preservation h4 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  
+  .preservation ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .preservation li {
+    padding: 3px 0 3px 18px;
+    position: relative;
+    font-size: 12px;
+    color: var(--text-soft);
+  }
+  
+  .preservation li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #4a9d5e;
+    font-weight: 700;
+  }
+  
+  .policy-ref {
+    margin-top: 24px;
+    padding: 16px;
+    background: var(--line);
+    color: #fff;
+    border-radius: 6px;
+  }
+  
+  .policy-ref h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  
+  .policy-ref p {
+    font-size: 11px;
+    line-height: 1.7;
+    color: #d4d4d0;
+  }
+  
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .frame {
+      position: static;
+      margin: 0 auto;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="label">WIREFRAME · CART · BASED ON CURRENT DESIGN</div>
+  <h1>현 카트 화면 → Phase02 합결제 와이어프레임</h1>
+  <div class="accent-line"></div>
+  <div class="sub">현 nugu.jp 카트 디자인(첫_진입시.png) 구조 유지 + Phase02 정책서 정합되게 5개 영역 변경</div>
+</div>
+
+<div class="layout">
+
+  <!-- ============= Mobile Frame ============= -->
+  <div>
+    <div class="frame">
+      <div class="notch">━━━</div>
+      
+      <div class="screen-header">
+        <span class="back">←</span>
+        <h2>カート</h2>
+        <div class="actions">🏠 ⌕</div>
+      </div>
+      
+      <div class="content">
+        
+        <!-- 변경 1: 안내 문구 -->
+        <div class="top-notice">
+          <span class="change-tag">CHANGED</span>
+          배송유형별로 따로 배송됩니다. 모든 상품을 한 번에 주문할 수 있습니다.
+        </div>
+        
+        <!-- 탭 (유지 — 필터 역할) -->
+        <div class="tabs">
+          <div class="tab active">すべて (5)</div>
+          <div class="tab">即日発送(国内) (3)</div>
+          <div class="tab">即日発送(韓国) (1)</div>
+          <div class="tab">通常配送 (1)</div>
+        </div>
+        
+        <!-- 카트 액션 -->
+        <div class="cart-actions">
+          <button class="cart-clear">カートを空にする</button>
+          <div class="coupon-toggle">
+            <span>クーポン適用後の価格を表示</span>
+            <div class="toggle-switch"></div>
+          </div>
+        </div>
+        
+        <!-- 그룹 1: 즉일발송(국내) -->
+        <div class="ship-group">
+          <div class="group-header">
+            <div class="check"></div>
+            <div class="group-badge jp">🚚 即日発送(国内)</div>
+          </div>
+          <div class="group-info jp">最短1〜3日でお届け目安</div>
+          
+          <div class="item-row">
+            <div class="check"></div>
+            <div class="thumb"></div>
+            <div class="body">
+              <div class="name">FELICE [2回再販] (ORIGINAL) レタリングカモロ...</div>
+              <div class="tags">
+                <span class="item-tag jp">即日発送(国内)</span>
+              </div>
+              <div class="meta">注文当日〜3日程度で発送</div>
+              <span class="close">×</span>
+            </div>
+          </div>
+          <div class="item-detail">
+            <span>White / S | 1</span>
+            <button class="opt-btn">オプション変更</button>
+          </div>
+          <div class="item-price">
+            <span class="sale-end">セール終了まで1日3時間48分</span>
+            <div class="price-row">
+              <span class="discount-pct">20%</span>
+              <span class="original-price">¥5,500</span>
+              <span class="final-price">¥4,400</span>
+            </div>
+          </div>
+          
+          <div class="item-row">
+            <div class="check"></div>
+            <div class="thumb"></div>
+            <div class="body">
+              <div class="name">FELICE [2回再販] (ORIGINAL) レタリングカモロ...</div>
+              <div class="tags">
+                <span class="item-tag jp">即日発送(国内)</span>
+              </div>
+              <div class="meta">最短1〜3日でお届け</div>
+              <span class="close">×</span>
+            </div>
+          </div>
+          <div class="item-detail">
+            <span>Ivory / S | 1</span>
+            <button class="opt-btn">オプション変更</button>
+          </div>
+          <div class="item-price">
+            <span class="sale-end">セール終了まで1日3時間48分</span>
+            <div class="price-row">
+              <span class="discount-pct">20%</span>
+              <span class="original-price">¥5,500</span>
+              <span class="final-price">¥4,400</span>
+            </div>
+          </div>
+          
+          <div class="item-row">
+            <div class="check"></div>
+            <div class="thumb"></div>
+            <div class="body">
+              <div class="name">FELICE [2回再販] (ORIGINAL) レタリングカモロ...</div>
+              <div class="tags">
+                <span class="item-tag jp">即日発送(国内)</span>
+              </div>
+              <div class="meta">最短1〜3日でお届け</div>
+              <span class="close">×</span>
+            </div>
+          </div>
+          <div class="item-detail">
+            <span>Black / S | 1</span>
+            <button class="opt-btn">オプション変更</button>
+          </div>
+          <div class="item-price">
+            <span class="sale-end">セール終了まで1日3時間48分</span>
+            <div class="price-row">
+              <span class="discount-pct">20%</span>
+              <span class="original-price">¥5,500</span>
+              <span class="final-price">¥4,400</span>
+            </div>
+          </div>
+          
+          <!-- 그룹 소계 (유지) -->
+          <div class="group-subtotal">
+            <div class="calc">選択商品の金額 ¥0 + 送料 ¥0 = ¥0 <span style="color:var(--text-mute);">(目安)</span></div>
+            <div class="free-info">あと6,000円で送料無料</div>
+          </div>
+          
+          <!-- 변경 2: 그룹별 주문 버튼 제거 -->
+          <div class="removed-section">
+            <div class="remove-tag">REMOVED</div>
+            <div class="removed-btn">即日発送(国内)の商品を注文する</div>
+            <div class="removed-reason">합결제 도입으로 그룹별 별도 주문 버튼 불필요</div>
+          </div>
+        </div>
+        
+        <!-- 그룹 2: 즉일발송(한국) -->
+        <div class="ship-group">
+          <div class="group-header">
+            <div class="check"></div>
+            <div class="group-badge kr">🚛 即日発送(韓国)</div>
+          </div>
+          <div class="group-info kr">最短3〜5日でお届け目安</div>
+          
+          <div class="item-row">
+            <div class="check"></div>
+            <div class="thumb"></div>
+            <div class="body">
+              <div class="name">FELICE [2回再販] (ORIGINAL) レタリングカモロ...</div>
+              <div class="tags">
+                <span class="item-tag kr">即日発送(韓国)</span>
+              </div>
+              <div class="meta">注文当日〜3日程度で発送</div>
+              <span class="close">×</span>
+            </div>
+          </div>
+          <div class="item-detail">
+            <span>ブリーチ / S | 1</span>
+            <button class="opt-btn">オプション変更</button>
+          </div>
+          <div class="item-price">
+            <span class="sale-end">セール終了まで1日3時間48分</span>
+            <div class="price-row">
+              <span class="discount-pct">20%</span>
+              <span class="original-price">¥5,500</span>
+              <span class="final-price">¥4,400</span>
+            </div>
+          </div>
+          
+          <div class="group-subtotal">
+            <div class="calc">選択商品の金額 ¥0 + 送料 ¥0 = ¥0 <span style="color:var(--text-mute);">(目安)</span></div>
+            <div class="free-info">あと6,000円で送料無料</div>
+          </div>
+          
+          <div class="removed-section">
+            <div class="remove-tag">REMOVED</div>
+            <div class="removed-btn">即日発送(韓国)の商品を注文する</div>
+            <div class="removed-reason">합결제 도입으로 그룹별 별도 주문 버튼 불필요</div>
+          </div>
+        </div>
+        
+        <!-- 그룹 3: 통상배송 -->
+        <div class="ship-group">
+          <div class="group-header">
+            <div class="check"></div>
+            <div class="group-badge general">📦 通常配送</div>
+          </div>
+          <div class="group-info">お届けまで7〜14日程度</div>
+          
+          <div class="item-row">
+            <div class="check"></div>
+            <div class="thumb"></div>
+            <div class="body">
+              <div class="name">FELICE [2回再販] (ORIGINAL) レタリングカモロ...</div>
+              <div class="meta">最短7〜14日でお届け</div>
+              <span class="close">×</span>
+            </div>
+          </div>
+          <div class="item-detail">
+            <span>ブリーチ / S | 1</span>
+            <button class="opt-btn">オプション変更</button>
+          </div>
+          <div class="item-price">
+            <span class="sale-end">セール終了まで1日3時間48分</span>
+            <div class="price-row">
+              <span class="discount-pct">20%</span>
+              <span class="original-price">¥5,500</span>
+              <span class="final-price">¥4,400</span>
+            </div>
+          </div>
+          
+          <div class="group-subtotal">
+            <div class="calc">選択商品の金額 ¥0 + 送料 ¥0 = ¥0 <span style="color:var(--text-mute);">(目安)</span></div>
+            <div class="free-info">あと6,000円で送料無料</div>
+          </div>
+          
+          <div class="removed-section">
+            <div class="remove-tag">REMOVED</div>
+            <div class="removed-btn">通常配送の商品を注文する</div>
+            <div class="removed-reason">합결제 도입으로 그룹별 별도 주문 버튼 불필요</div>
+          </div>
+        </div>
+        
+        <!-- 최종 합계 -->
+        <div class="final-summary">
+          <div class="summary-row">
+            <span>選択商品の金額</span>
+            <span>¥0</span>
+          </div>
+          <div class="summary-row">
+            <span>送料</span>
+            <span>¥0</span>
+          </div>
+          <div class="summary-row total">
+            <span>総注文金額 (目安)</span>
+            <span class="val">¥0</span>
+          </div>
+          
+          <div class="free-banner">
+            <div class="main">あと6,000円で送料無料</div>
+            <div class="sub">(¥6,000以上ご購入で送料無料)</div>
+          </div>
+          
+          <div class="extra-note">
+            ※クーポン適用後の最大割引の目安です<br>
+            ※最終的な割引は注文画面で確定します
+          </div>
+        </div>
+        
+        <!-- 추천 아이템 -->
+        <div class="recommended">
+          <h3>あなたへのおすすめアイテム</h3>
+          <div class="desc">ベストセラーアイテムを厳選！</div>
+          <div class="carousel">
+            <div class="rec-item">
+              <div class="thumb"></div>
+              <div class="name">Name<br>カテゴリー</div>
+              <div class="price">-48% ¥189,760</div>
+            </div>
+            <div class="rec-item">
+              <div class="thumb"></div>
+              <div class="name">Name<br>カテゴリー</div>
+              <div class="price">-48% ¥189,760</div>
+            </div>
+            <div class="rec-item">
+              <div class="thumb"></div>
+              <div class="name">Name<br>カテゴリー</div>
+              <div class="price">-48% ¥189,760</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sticky bottom -->
+        <div class="sticky-bottom">
+          <!-- 변경 4: 동시 주문 불가 안내 제거 -->
+          <div class="removed-note">
+            <span class="remove-tag">REMOVED</span>
+            <span class="strike">※異なる配送タイプの商品は同時に注文できません</span>
+          </div>
+          
+          <!-- 변경 5: 통합 주문 버튼 활성 -->
+          <button class="cta-button">注文する<span class="inline-change">ACTIVE</span></button>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  
+  
+  <!-- ============= Side Panel ============= -->
+  <div class="side-panel">
+    <h2>CHANGE NOTES</h2>
+    <h3>현 디자인 → Phase02 변경 5개</h3>
+    
+    <ul class="change-list">
+      <li>
+        <div><span class="change-num">01</span><span class="change-title">상단 안내 문구</span></div>
+        <div class="change-detail">
+          현 카트 상단의 핑크 안내 박스 → 문구만 교체
+          <div class="asis"><strong>AS-IS</strong>"配送タイプごとにお届け時期が異なるため、別々にご注文ください"</div>
+          <div class="tobe"><strong>TO-BE</strong>"배송유형별로 따로 배송됩니다. 모든 상품을 한 번에 주문할 수 있습니다"</div>
+        </div>
+      </li>
+      
+      <li>
+        <div><span class="change-num">02</span><span class="change-title">그룹별 주문 버튼 제거</span></div>
+        <div class="change-detail">
+          현 디자인의 각 그룹 끝 "그룹별 주문 버튼" 3개 모두 제거
+          <div class="asis"><strong>AS-IS</strong>「即日発送(国内)の商品を注文する」 + 「即日発送(韓国)の~」 + 「通常配送の~」 (각 그룹별 1개씩)</div>
+          <div class="tobe"><strong>TO-BE</strong>제거 — 합결제는 통합 주문 버튼 1개만</div>
+        </div>
+      </li>
+      
+      <li>
+        <div><span class="change-num">03</span><span class="change-title">그룹 소계·송료 표시</span></div>
+        <div class="change-detail">
+          정책서 정합 — 그룹 단위 소계는 유지 (배송유형별로 보여주는 게 옳음)
+          <div class="tobe"><strong>유지</strong>「選択商品の金額 ¥X + 送料 ¥X = ¥X(目安)」 + 「あと6,000円で送料無料」</div>
+        </div>
+      </li>
+      
+      <li>
+        <div><span class="change-num">04</span><span class="change-title">하단 안내 문구 제거</span></div>
+        <div class="change-detail">
+          注文する 버튼 위의 빨간 경고 안내문 제거
+          <div class="asis"><strong>AS-IS</strong>"※異なる配送タイプの商品は同時に注文できません"</div>
+          <div class="tobe"><strong>TO-BE</strong>제거 — Phase02는 다른 배송유형 동시 주문 가능</div>
+        </div>
+      </li>
+      
+      <li>
+        <div><span class="change-num">05</span><span class="change-title">통합 주문 버튼 활성화</span></div>
+        <div class="change-detail">
+          하단 注文する 버튼 회색 비활성 → 검정 활성. 모든 그룹 합산 주문
+          <div class="asis"><strong>AS-IS</strong>회색·비활성 (한 그룹만 선택해야 그룹별 버튼이 활성)</div>
+          <div class="tobe"><strong>TO-BE</strong>검정·활성 → 선택 상품 전체 합산해서 주문서로 이동</div>
+        </div>
+      </li>
+    </ul>
+    
+    <div class="preservation">
+      <h4>유지되는 영역 (변경 없음)</h4>
+      <ul>
+        <li>헤더 (← / カート / 🏠 ⌕)</li>
+        <li>탭 (すべて / 国内 / 韓国 / 通常) — 필터 역할로 유지</li>
+        <li>카트 액션 (カートを空にする / クーポン適用後の価格を表示 토글)</li>
+        <li>배송유형별 그룹화 (그룹 헤더·아이콘·배송 시기 안내)</li>
+        <li>상품 카드 구조 (체크박스·이미지·이름·태그·옵션·수량·금액)</li>
+        <li>セール終了まで 카운트다운</li>
+        <li>그룹 단위 「あと6,000円で送料無料」 안내</li>
+        <li>최종 합계 영역 + 핑크 무료배송 배너 + 주석 (※)</li>
+        <li>あなたへのおすすめアイテム 캐러셀</li>
+      </ul>
+    </div>
+    
+    <div class="policy-ref">
+      <h4>POLICY REFERENCE</h4>
+      <p>정책서 "장바구니 정책 — 배송유형 그룹 유지" + "주문 방식 변경 — 통합 주문 버튼 1개 제공" + 본 문서 D02·D17·D18·D23·§3 영역 정합. 명칭 ShippingGroup (v0.34) 적용. 그룹 소계의 송료는 안내 목적이며 최종 결제 금액은 주문서에서 D23 (쿠폰 적용 후 결제 금액 기준) 무료배송 판정 결과로 확정.</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

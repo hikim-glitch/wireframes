@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase02 주문서·마이페이지 와이어프레임 (현 디자인 기반)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --bg: #f5f5f0;
+    --frame-bg: #ffffff;
+    --line: #1a1a1a;
+    --line-soft: #e0e0d8;
+    --text: #1a1a1a;
+    --text-soft: #666;
+    --text-mute: #999;
+    --accent: #e84033;
+    --tag-bg: #f8f6f0;
+    --notice-bg-changed: #e8f5e9;
+    --jp-blue: #4a90c8;
+    --jp-blue-bg: #e8f3fb;
+    --kr-green: #5db075;
+    --kr-green-bg: #e8f5ec;
+    --general-gray: #999;
+    --general-bg: #f0f0ed;
+    --remove-bg: #ffebee;
+    --remove-border: #e57373;
+    --change-border: #4a9d5e;
+  }
+  
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans JP', 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 32px 16px 80px;
+    min-height: 100vh;
+  }
+  
+  .header {
+    max-width: 1200px;
+    margin: 0 auto 28px;
+  }
+  
+  .header .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  
+  .header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 8px;
+  }
+  
+  .header .accent-line {
+    width: 36px;
+    height: 3px;
+    background: var(--accent);
+    margin: 14px 0;
+  }
+  
+  .header .sub {
+    font-size: 13px;
+    color: var(--text-soft);
+  }
+  
+  /* Section divider */
+  .screen-section {
+    max-width: 1200px;
+    margin: 40px auto 0;
+  }
+  
+  .screen-section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--line);
+  }
+  
+  .screen-section-header .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+  }
+  
+  .screen-section-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+  }
+  
+  .screen-section-header .basis {
+    font-size: 11px;
+    color: var(--text-mute);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  
+  /* Layout: frame + notes */
+  .layout {
+    display: grid;
+    grid-template-columns: 410px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  
+  /* Mobile frame */
+  .frame {
+    width: 390px;
+    background: var(--frame-bg);
+    border: 2px solid var(--line);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 6px 6px 0 var(--line);
+  }
+  
+  .notch {
+    height: 22px;
+    background: var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+  }
+  
+  .screen-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .screen-header .back { font-size: 20px; }
+  .screen-header h3 {
+    font-size: 16px;
+    font-weight: 700;
+    flex: 1;
+    text-align: center;
+  }
+  .screen-header .actions { display: flex; gap: 10px; font-size: 14px; }
+  
+  .content {
+    max-height: 640px;
+    overflow-y: auto;
+  }
+  
+  .content::-webkit-scrollbar { width: 4px; }
+  .content::-webkit-scrollbar-thumb { background: var(--line-soft); border-radius: 2px; }
+  
+  /* Reserve timer (order page) */
+  .reserve-timer {
+    background: var(--line);
+    color: #fff;
+    padding: 8px 16px;
+    text-align: center;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+  }
+  
+  /* Section in screen */
+  .sec {
+    border-bottom: 6px solid var(--bg);
+    padding: 14px 16px;
+  }
+  
+  .sec-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  
+  .sec-title .toggle { font-size: 14px; color: var(--text-soft); }
+  
+  /* Buttons row in section */
+  .btn-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  
+  .btn-row button {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid var(--line-soft);
+    background: #fff;
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--text);
+    font-family: inherit;
+  }
+  
+  /* Address row */
+  .addr-block { font-size: 12px; line-height: 1.5; }
+  .addr-block .name { font-weight: 700; margin-bottom: 2px; }
+  .addr-block .phone { color: var(--text-soft); margin-bottom: 2px; }
+  .addr-block .addr-text { color: var(--text); font-size: 11px; }
+  .addr-block .modify-btn {
+    margin-top: 6px;
+    padding: 4px 10px;
+    border: 1px solid var(--line-soft);
+    background: #fff;
+    border-radius: 3px;
+    font-size: 11px;
+  }
+  
+  /* Item count badge (changed area) */
+  .changed-marker {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    background: var(--change-border);
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    margin-left: 4px;
+    vertical-align: 1px;
+  }
+  
+  /* ShippingGroup inside order page */
+  .sg-section {
+    border: 1.5px solid var(--change-border);
+    border-radius: 6px;
+    margin-top: 10px;
+    overflow: hidden;
+    background: #fafffa;
+  }
+  
+  .sg-header {
+    background: var(--notice-bg-changed);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  
+  .sg-badge {
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  
+  .sg-badge.jp { background: var(--jp-blue); color: #fff; }
+  .sg-badge.kr { background: var(--kr-green); color: #fff; }
+  .sg-badge.general { background: var(--general-gray); color: #fff; }
+  
+  .sg-meta {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--text-soft);
+  }
+  
+  .order-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  
+  .order-item:last-child { border-bottom: none; }
+  
+  .order-item .thumb {
+    width: 56px;
+    height: 70px;
+    background: var(--line-soft);
+    border-radius: 4px;
+    flex-shrink: 0;
+    background-image: linear-gradient(45deg, transparent 45%, #c0c0b8 45%, #c0c0b8 55%, transparent 55%);
+  }
+  
+  .order-item .body {
+    flex: 1;
+    font-size: 11px;
+  }
+  
+  .order-item .name { line-height: 1.3; margin-bottom: 4px; }
+  .order-item .opt { color: var(--text-soft); margin-bottom: 4px; font-size: 10px; }
+  .order-item .price-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+  }
+  .order-item .price-line .calc { color: var(--text-soft); }
+  .order-item .price-line .final { font-weight: 700; }
+  .order-item .discount-text {
+    font-size: 10px;
+    color: var(--accent);
+    text-align: right;
+    margin-top: 2px;
+  }
+  
+  /* SG subtotal */
+  .sg-subtotal {
+    background: #f4faf4;
+    padding: 8px 12px;
+    border-top: 1px dashed var(--line-soft);
+    font-size: 11px;
+  }
+  
+  .sg-subtotal .row {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+  }
+  
+  .sg-subtotal .row.bold { font-weight: 700; padding-top: 4px; border-top: 1px solid var(--line-soft); margin-top: 4px; }
+  .sg-subtotal .row .discount { color: var(--accent); }
+  .sg-subtotal .row .free { color: var(--change-border); font-weight: 700; }
+  
+  /* Total line */
+  .total-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 13px;
+    border-top: 1px solid var(--line-soft);
+    margin-top: 6px;
+  }
+  
+  .total-line.bold { font-weight: 700; }
+  .total-line .discount-val { color: var(--accent); }
+  
+  /* Discount/Coupon section */
+  .coupon-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  
+  .coupon-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    font-size: 13px;
+    background: #fff;
+    text-align: right;
+  }
+  
+  .coupon-detail-btn {
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--text);
+  }
+  
+  .auto-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--accent);
+    margin-left: auto;
+  }
+  
+  .toggle-on {
+    width: 30px;
+    height: 16px;
+    background: var(--accent);
+    border-radius: 8px;
+    position: relative;
+  }
+  
+  .toggle-on::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    top: 2px;
+    right: 2px;
+  }
+  
+  .coupon-applied {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--text-soft);
+    margin-top: 6px;
+  }
+  
+  .coupon-applied .x { color: var(--accent); }
+  
+  .small-note {
+    font-size: 10px;
+    color: var(--text-mute);
+    margin-top: 4px;
+  }
+  
+  /* Payment methods */
+  .payment-list { margin-top: 8px; }
+  
+  .payment-method {
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    padding: 12px;
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+  
+  .payment-method.selected { border-color: var(--line); background: #fafaf7; }
+  
+  .payment-method-info {
+    background: var(--line);
+    color: #fff;
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 4px;
+    font-size: 10px;
+    line-height: 1.6;
+  }
+  
+  /* Final payment summary */
+  .final-sum-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .final-sum-title .val {
+    color: var(--accent);
+    font-size: 17px;
+  }
+  
+  .final-sum-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    font-size: 12px;
+  }
+  
+  /* Buyer benefits */
+  .benefit-box {
+    border: 1px dashed var(--line-soft);
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+  }
+  
+  .benefit-title {
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .benefit-title .val { color: var(--accent); }
+  .benefit-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    padding: 2px 0;
+  }
+  
+  /* Removed notice in sticky */
+  .sticky-bottom-changed {
+    border-top: 1px solid var(--line-soft);
+    padding: 12px 16px;
+    background: var(--frame-bg);
+  }
+  
+  .removed-banner {
+    background: var(--remove-bg);
+    border: 1.5px dashed var(--remove-border);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 10px;
+    color: var(--text-soft);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  
+  .removed-banner .strike { text-decoration: line-through; }
+  
+  .removed-banner .remove-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    background: var(--remove-border);
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    margin-right: 6px;
+    vertical-align: 1px;
+  }
+  
+  .cta-button {
+    background: var(--line);
+    color: #fff;
+    width: 100%;
+    padding: 14px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: inherit;
+  }
+  
+  .cta-button.changed { background: var(--change-border); }
+  
+  /* Notes panel */
+  .notes-panel {
+    background: var(--frame-bg);
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    padding: 24px;
+  }
+  
+  .notes-panel h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  
+  .change-list { list-style: none; padding: 0; }
+  .change-list > li { padding: 14px 0; border-top: 1px solid var(--line-soft); }
+  .change-list > li:first-child { padding-top: 0; border-top: none; }
+  
+  .change-num {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    background: var(--line);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-right: 8px;
+    letter-spacing: 1px;
+  }
+  
+  .change-title {
+    font-size: 14px;
+    font-weight: 700;
+    display: inline;
+  }
+  
+  .change-detail {
+    margin: 8px 0 0 38px;
+    font-size: 12px;
+    color: var(--text-soft);
+    line-height: 1.6;
+  }
+  
+  .asis, .tobe {
+    display: block;
+    padding: 6px 10px;
+    margin-top: 6px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+  
+  .asis { background: var(--remove-bg); border-left: 2px solid var(--remove-border); }
+  .tobe { background: var(--notice-bg-changed); border-left: 2px solid var(--change-border); }
+  
+  .asis strong, .tobe strong {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    margin-right: 4px;
+    padding: 1px 4px;
+    border-radius: 2px;
+    background: var(--frame-bg);
+    color: var(--text);
+  }
+  
+  .preservation {
+    margin-top: 20px;
+    padding: 14px;
+    background: var(--tag-bg);
+    border-radius: 6px;
+  }
+  
+  .preservation h4 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  
+  .preservation ul {
+    list-style: none;
+    padding: 0;
+    font-size: 11px;
+  }
+  
+  .preservation li {
+    padding: 3px 0 3px 18px;
+    position: relative;
+    color: var(--text-soft);
+  }
+  
+  .preservation li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--change-border);
+    font-weight: 700;
+  }
+  
+  /* ============= Mypage specific ============= */
+  
+  .mypage-profile {
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-bottom: 6px solid var(--bg);
+  }
+  
+  .profile-icon {
+    width: 56px;
+    height: 56px;
+    background: #fff;
+    border: 1px solid var(--line-soft);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--text-mute);
+    flex-shrink: 0;
+  }
+  
+  .profile-info { flex: 1; }
+  .profile-info .name { font-size: 16px; font-weight: 700; }
+  .profile-info .rank { font-size: 11px; color: var(--text-soft); margin-top: 4px; }
+  .profile-info .rank strong { color: var(--accent); }
+  .profile-info .link { font-size: 11px; color: var(--text-soft); text-decoration: underline; margin-top: 4px; display: block; }
+  
+  .profile-qr {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--line-soft);
+    background: linear-gradient(45deg, #1a1a1a 25%, transparent 25%, transparent 75%, #1a1a1a 75%), 
+                linear-gradient(45deg, #1a1a1a 25%, #fff 25%, #fff 75%, #1a1a1a 75%);
+    background-size: 6px 6px;
+    background-position: 0 0, 3px 3px;
+  }
+  
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line-soft);
+    border-bottom: 6px solid var(--bg);
+  }
+  
+  .info-grid-item {
+    background: var(--frame-bg);
+    padding: 14px 16px;
+  }
+  
+  .info-grid-item .key {
+    font-size: 11px;
+    color: var(--text-soft);
+    margin-bottom: 4px;
+  }
+  
+  .info-grid-item .val {
+    font-size: 15px;
+    font-weight: 700;
+  }
+  
+  /* Order history card */
+  .history-card {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  
+  .history-card-tags {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 6px;
+    padding: 0 16px;
+    flex-wrap: wrap;
+  }
+  
+  .history-card-tags .tag {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-weight: 700;
+    color: #fff;
+  }
+  
+  .history-card-tags .tag.jp { background: var(--jp-blue); }
+  .history-card-tags .tag.kr { background: var(--kr-green); }
+  .history-card-tags .tag.general { background: var(--general-gray); }
+  
+  .history-card-info {
+    font-size: 11px;
+    color: var(--text-soft);
+    padding: 0 16px;
+    margin-bottom: 6px;
+  }
+  
+  .history-card-body {
+    display: flex;
+    gap: 10px;
+    padding: 0 16px;
+  }
+  
+  .history-card-body .thumb {
+    width: 56px;
+    height: 56px;
+    background: var(--line-soft);
+    border-radius: 4px;
+    flex-shrink: 0;
+    background-image: linear-gradient(45deg, transparent 45%, #c0c0b8 45%, #c0c0b8 55%, transparent 55%);
+  }
+  
+  .history-card-body .info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .history-card-body .date {
+    font-size: 11px;
+    color: var(--text);
+  }
+  
+  .history-card-body .name {
+    font-size: 11px;
+    color: var(--text);
+    line-height: 1.3;
+    margin: 2px 0;
+  }
+  
+  .history-card-body .price {
+    text-align: right;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  
+  .history-card-body .status {
+    font-size: 10px;
+    color: var(--text-soft);
+    text-align: right;
+  }
+  
+  /* Multi shipping summary (changed) */
+  .multi-shipping-summary {
+    margin-top: 6px;
+    padding: 6px 8px;
+    background: var(--notice-bg-changed);
+    border-left: 2px solid var(--change-border);
+    border-radius: 3px;
+    font-size: 10px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  
+  .history-card-actions {
+    display: flex;
+    gap: 6px;
+    padding: 8px 16px 0;
+    justify-content: flex-end;
+  }
+  
+  .history-card-actions button {
+    padding: 6px 12px;
+    font-size: 11px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    font-family: inherit;
+    background: #fff;
+  }
+  
+  .history-card-actions .primary { background: var(--line); color: #fff; }
+  
+  /* Bottom tabs (mypage) */
+  .bottom-tabs {
+    display: flex;
+    border-top: 1px solid var(--line-soft);
+    background: var(--frame-bg);
+    padding: 8px 0 12px;
+  }
+  
+  .bottom-tab {
+    flex: 1;
+    text-align: center;
+    font-size: 10px;
+    color: var(--text-soft);
+  }
+  
+  .bottom-tab.active { color: var(--text); font-weight: 700; }
+  
+  .bottom-tab .icon {
+    display: block;
+    margin: 0 auto 4px;
+    width: 20px;
+    height: 20px;
+    background: var(--line-soft);
+    border-radius: 4px;
+  }
+  
+  .bottom-tab.active .icon { background: var(--line); }
+  
+  /* Generic boxes */
+  .menu-row {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+  }
+  
+  .menu-row .arrow { color: var(--text-mute); }
+  
+  .sec-head-row {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  
+  .sec-head-row .view-all {
+    font-size: 11px;
+    color: var(--text-soft);
+    font-weight: 400;
+  }
+  
+  /* Order history page specific */
+  .order-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  
+  .order-tab {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    font-size: 13px;
+    color: var(--text-soft);
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .order-tab.active { color: var(--text); font-weight: 700; }
+  
+  .order-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 20%;
+    right: 20%;
+    height: 2px;
+    background: var(--text);
+  }
+  
+  .order-filter {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  
+  .order-filter .count { font-weight: 700; }
+  .order-filter .filters { display: flex; gap: 12px; }
+  .order-filter .filter { color: var(--text-soft); }
+  
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .frame {
+      margin: 0 auto;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="label">WIREFRAME · ORDER + MYPAGE · BASED ON CURRENT DESIGN</div>
+  <h1>주문서·마이페이지·주문이력 와이어프레임</h1>
+  <div class="accent-line"></div>
+  <div class="sub">현 nugu.jp 디자인 (기존주문자_CASE / 마이페이지_주문내역O / こ_注文全体) 구조 유지 + Phase02 합결제 정합 변경</div>
+</div>
+
+<!-- ================ Screen 1: 注文書 (主文/支払い) ================ -->
+<div class="screen-section">
+  <div class="screen-section-header">
+    <span class="num">SCREEN 01</span>
+    <h2>注文書 (注文/支払い)</h2>
+    <span class="basis">basis: 기존주문자_CASE.png</span>
+  </div>
+  
+  <div class="layout">
+    <div class="frame">
+      <div class="notch">━━━</div>
+      
+      <div class="screen-header">
+        <span class="back">←</span>
+        <h3>注文/支払い</h3>
+        <div class="actions">⌕ 🛒</div>
+      </div>
+      
+      <div class="reserve-timer">在庫確保時間 00:29:41</div>
+      
+      <div class="content">
+        
+        <!-- 注文者情報 (접힘) -->
+        <div class="sec" style="padding-bottom: 0;">
+          <div class="sec-title">
+            <span>注文者情報</span>
+            <span class="toggle">∨</span>
+          </div>
+        </div>
+        
+        <!-- お届け先 -->
+        <div class="sec">
+          <div class="sec-title">お届け先</div>
+          <div class="btn-row">
+            <button>新規入力</button>
+            <button>お届け先履歴</button>
+          </div>
+          <div class="addr-block">
+            <div class="name">阿部 恵理香</div>
+            <div class="phone">09012345678</div>
+            <div class="addr-text">(1076107) 東京都 港区 赤坂赤坂パークビル 7階 2f</div>
+            <button class="modify-btn">修正</button>
+          </div>
+        </div>
+        
+        <!-- ✦ 변경 1: 注文するアイテム → ShippingGroup section 분리 ✦ -->
+        <div class="sec">
+          <div class="sec-title">
+            <span>注文するアイテム 5件<span class="changed-marker">CHANGED</span></span>
+            <span class="toggle">∧</span>
+          </div>
+          
+          <!-- ShippingGroup A: 즉日発送(国内) -->
+          <div class="sg-section">
+            <div class="sg-header">
+              <span class="sg-badge jp">JP</span>
+              <span>即日発送(国内)</span>
+              <span class="sg-meta">最短1〜3日 / 3件</span>
+            </div>
+            <div class="order-item">
+              <div class="thumb"></div>
+              <div class="body">
+                <div class="name">MOUSSY INSILENCE DOUBLE WAIST BAGGY</div>
+                <div class="opt">Color: L/BLU, Size: 0</div>
+                <div class="price-line">
+                  <span class="calc">¥3,900 × 1 = ¥3,900</span>
+                </div>
+                <div class="discount-text">-¥190 (5th BIRTHDAY 5%OFF)</div>
+                <div class="price-line">
+                  <span></span><span class="final">¥3,710</span>
+                </div>
+              </div>
+            </div>
+            <div class="order-item">
+              <div class="thumb"></div>
+              <div class="body">
+                <div class="name">MOUSSY INSILENCE DOUBLE WAIST BAGGY</div>
+                <div class="opt">Color: L/BLU, Size: 0</div>
+                <div class="price-line">
+                  <span class="calc">¥3,900 × 1</span>
+                  <span class="final">¥3,710</span>
+                </div>
+              </div>
+            </div>
+            <div class="sg-subtotal">
+              <div class="row">
+                <span>小計</span>
+                <span>¥7,800</span>
+              </div>
+              <div class="row">
+                <span>商品割引</span>
+                <span class="discount">-¥380</span>
+              </div>
+              <div class="row">
+                <span>クーポン (按分)</span>
+                <span class="discount">-¥222</span>
+              </div>
+              <div class="row">
+                <span>送料</span>
+                <span class="free">無料 (¥6,000↑)</span>
+              </div>
+              <div class="row bold">
+                <span>合計</span>
+                <span>¥7,198</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- ShippingGroup B: 즉日発送(韓国) -->
+          <div class="sg-section" style="margin-top: 8px;">
+            <div class="sg-header">
+              <span class="sg-badge kr">KR</span>
+              <span>即日発送(韓国)</span>
+              <span class="sg-meta">最短3〜5日 / 1件</span>
+            </div>
+            <div class="order-item">
+              <div class="thumb"></div>
+              <div class="body">
+                <div class="name">MOUSSY INSILENCE DOUBLE WAIST BAGGY</div>
+                <div class="opt">Color: L/BLU, Size: 0</div>
+                <div class="price-line">
+                  <span class="calc">¥3,900 × 1</span>
+                  <span class="final">¥3,710</span>
+                </div>
+              </div>
+            </div>
+            <div class="sg-subtotal">
+              <div class="row">
+                <span>小計</span>
+                <span>¥3,900</span>
+              </div>
+              <div class="row">
+                <span>商品割引</span>
+                <span class="discount">-¥190</span>
+              </div>
+              <div class="row">
+                <span>クーポン (按分)</span>
+                <span class="discount">-¥111</span>
+              </div>
+              <div class="row">
+                <span>送料</span>
+                <span>¥550</span>
+              </div>
+              <div class="row bold">
+                <span>合計</span>
+                <span>¥4,149</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- ShippingGroup C: 通常配送 -->
+          <div class="sg-section" style="margin-top: 8px;">
+            <div class="sg-header">
+              <span class="sg-badge general">GE</span>
+              <span>通常配送</span>
+              <span class="sg-meta">7〜14日 / 1件</span>
+            </div>
+            <div class="order-item">
+              <div class="thumb"></div>
+              <div class="body">
+                <div class="name">MOUSSY INSILENCE DOUBLE WAIST BAGGY</div>
+                <div class="opt">Color: L/BLU, Size: 0</div>
+                <div class="price-line">
+                  <span class="calc">¥3,900 × 1</span>
+                  <span class="final">¥3,710</span>
+                </div>
+              </div>
+            </div>
+            <div class="sg-subtotal">
+              <div class="row">
+                <span>小計</span>
+                <span>¥3,900</span>
+              </div>
+              <div class="row">
+                <span>商品割引</span>
+                <span class="discount">-¥190</span>
+              </div>
+              <div class="row">
+                <span>クーポン (按分)</span>
+                <span class="discount">-¥224</span>
+              </div>
+              <div class="row">
+                <span>送料</span>
+                <span>¥550</span>
+              </div>
+              <div class="row bold">
+                <span>合計</span>
+                <span>¥4,036</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 商品合計 / 送料 (전체) -->
+          <div class="total-line">
+            <span>商品合計</span>
+            <span>¥11,130</span>
+          </div>
+          <div class="total-line">
+            <span>送料 (¥6,000以上送料無料)</span>
+            <span>¥1,100</span>
+          </div>
+        </div>
+        
+        <!-- 割引 (현 디자인 유지) -->
+        <div class="sec">
+          <div class="sec-title">割引</div>
+          
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+            <span style="font-size: 13px;">クーポン <span style="color: var(--accent);">*</span></span>
+            <div class="auto-toggle">
+              最大割引自動適用
+              <div class="toggle-on"></div>
+            </div>
+          </div>
+          <div class="coupon-row">
+            <input class="coupon-input" value="¥ 557" readonly>
+            <button class="coupon-detail-btn">クーポン詳細</button>
+          </div>
+          <div class="coupon-applied">
+            ONLINE POPUP BRAND 延長 5%OFFクーポン
+            <span class="x">×</span>
+          </div>
+          
+          <div style="margin-top: 12px;">
+            <span style="font-size: 13px;">ポイント <span style="color: var(--accent);">*</span></span>
+            <span style="font-size: 11px; color: var(--text-soft);">(保有中0P)</span>
+          </div>
+          <div class="coupon-row">
+            <input class="coupon-input" value="¥ 0" readonly>
+            <button class="coupon-detail-btn">クーポン詳細</button>
+          </div>
+          <div class="small-note">お支払い合計金額が3,000円以上の場合、ポイントのご利用が可能です。</div>
+          
+          <div style="margin-top: 12px;">
+            <span style="font-size: 13px;">預り金 <span style="color: var(--accent);">*</span></span>
+            <span style="font-size: 11px; color: var(--text-soft);">(保有中0P)</span>
+          </div>
+          <div class="coupon-row">
+            <input class="coupon-input" value="¥ 0" readonly>
+            <button class="coupon-detail-btn">クーポン詳細</button>
+          </div>
+        </div>
+        
+        <!-- お支払い方法 -->
+        <div class="sec">
+          <div class="sec-title">お支払い方法</div>
+          <div class="payment-list">
+            <div class="payment-method selected" style="background: var(--line); color: #fff;">GMO後払い</div>
+            <div class="payment-method-info">
+              · GMO後払い導入記念00月00日まで手数料無料イベントを開催致します。<br>
+              · GMO後払いイベント終了後、手数料300円が発生致します。<br>
+              · GMO後払いは記載されたお届け先情報の名前・電話番号・住所がご本人様名義と一致する場合のみ審査が可能です。<br>
+              · 55,000円(税込)以上ご注文時にはご利用いただけません。
+            </div>
+            <div class="payment-method">クレジットカード</div>
+            <div class="payment-method">PayPay</div>
+            <div class="payment-method">コンビニ</div>
+            <div class="payment-method">d払い</div>
+            <div class="payment-method">メルペイ</div>
+          </div>
+        </div>
+        
+        <!-- お支払い合計 -->
+        <div class="sec">
+          <div class="final-sum-title">
+            <span>お支払い合計</span>
+            <span class="val">¥10,873</span>
+          </div>
+          <div class="final-sum-row"><span>アイテム</span><span>¥11,700</span></div>
+          <div class="final-sum-row"><span>送料 (¥6,000以上ご購入で送料無料)</span><span>¥0</span></div>
+          <div class="final-sum-row"><span>GMO後払い手数料</span><span>¥300</span></div>
+          <div class="final-sum-row"><span>割引</span><span style="color: var(--accent);">-¥570</span></div>
+          <div class="final-sum-row"><span>会員ランク割引</span><span>¥0</span></div>
+          <div class="final-sum-row"><span>クーポン</span><span style="color: var(--accent);">-¥557</span></div>
+          <div class="final-sum-row"><span>ポイント</span><span>0P</span></div>
+          <div class="final-sum-row"><span>預り金</span><span>¥0</span></div>
+          
+          <div class="benefit-box">
+            <div class="benefit-title">
+              <span>購入者特典 (1P=¥1)</span>
+              <span class="val">+最大1,230P</span>
+            </div>
+            <div class="benefit-row"><span>配送完了後</span><span>1,080P</span></div>
+            <div class="benefit-row"><span>レビュー作成時</span><span>最大150P</span></div>
+          </div>
+        </div>
+        
+        <!-- ✦ Sticky bottom (변경 영역) ✦ -->
+        <div class="sticky-bottom-changed">
+          <div class="removed-banner">
+            <span class="remove-tag">REMOVED</span>
+            <span class="strike">異なる配送タイプの商品は同時に注文できません</span>
+          </div>
+          <button class="cta-button changed">¥10,873 お支払いへ進む (5)<span class="changed-marker" style="background: #fff; color: var(--change-border);">CHANGED</span></button>
+          <div class="small-note" style="text-align: center; margin-top: 4px;">
+            기존: 即日発送(国内) | ¥10,873 お支払いへ進む (3) [배송유형 + 그 그룹 건수]
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <div class="notes-panel">
+      <h3>CHANGE NOTES · 注文書</h3>
+      <ul class="change-list">
+        <li>
+          <span class="change-num">01</span><span class="change-title">注文するアイテム → ShippingGroup section 분리</span>
+          <div class="change-detail">
+            정책서: "주문서는 하나로 생성되지만, 내부적으로는 배송유형별 section으로 구분하여 노출"
+            <div class="asis"><strong>AS-IS</strong>전체 5件이 한 목록으로 나열, 즉日発送(国内) 태그가 아이템마다 붙음</div>
+            <div class="tobe"><strong>TO-BE</strong>JP / KR / GE 3개 section, 각 section 내에 상품·소계·할인(안분)·배송비·합계 표시</div>
+          </div>
+        </li>
+        <li>
+          <span class="change-num">02</span><span class="change-title">하단 안내 제거</span>
+          <div class="change-detail">
+            <div class="asis"><strong>AS-IS</strong>"異なる配送タイプの商品は同時に注文できません"</div>
+            <div class="tobe"><strong>TO-BE</strong>제거 — Phase02는 다른 배송유형 동시 주문 OK</div>
+          </div>
+        </li>
+        <li>
+          <span class="change-num">03</span><span class="change-title">Sticky bottom 버튼 텍스트</span>
+          <div class="change-detail">
+            <div class="asis"><strong>AS-IS</strong>"即日発送(国内) | ¥10,873 お支払いへ進む (3)" — 배송유형명 + 그 그룹의 건수</div>
+            <div class="tobe"><strong>TO-BE</strong>"¥10,873 お支払いへ進む (5)" — 배송유형 표기 제거, 전체 주문 건수</div>
+          </div>
+        </li>
+        <li>
+          <span class="change-num">04</span><span class="change-title">商品合計·送料 ShippingGroup별 합산</span>
+          <div class="change-detail">
+            <div class="asis"><strong>AS-IS</strong>商品合計 ¥11,130 / 送料 ¥0 (한 배송유형이므로 단일 송료)</div>
+            <div class="tobe"><strong>TO-BE</strong>商品合計 ¥11,130 / 送料 ¥1,100 (3개 ShippingGroup의 송료 합)</div>
+          </div>
+        </li>
+      </ul>
+      
+      <div class="preservation">
+        <h4>유지되는 영역 (변경 없음)</h4>
+        <ul>
+          <li>헤더 + 在庫確保時間 카운트다운</li>
+          <li>注文者情報 (접힘)</li>
+          <li>お届け先 + 新規入力 / お届け先履歴 / 修正</li>
+          <li>割引 영역 (クーポン·ポイント·預り金)</li>
+          <li>最大割引自動適用 ON 토글</li>
+          <li>お支払い方法 (GMO後払い 안내 박스 + 5개 결제수단)</li>
+          <li>お支払い合計 영역 전체 (아이템·송료·할인·쿠폰·포인트·預り金)</li>
+          <li>購入者特典 (1P=¥1) 박스</li>
+        </ul>
+      </div>
+      
+      <div class="preservation" style="margin-top: 16px; background: #fff0f0; border-left: 3px solid var(--accent);">
+        <h4 style="color: var(--accent);">비회원 케이스 (비회원_CASE.png)</h4>
+        <ul style="list-style: none;">
+          <li style="padding-left: 0;">위 변경 1~4 동일하게 적용</li>
+          <li style="padding-left: 0;">추가 변경 없음 — 注文者情報 + お届け先 양식이 펼쳐진 상태로만 다름 (현 구조 그대로)</li>
+          <li style="padding-left: 0;">하단 표기 "決済金額 ¥10,873" 도 동일</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================ Screen 2: マイページ ================ -->
+<div class="screen-section">
+  <div class="screen-section-header">
+    <span class="num">SCREEN 02</span>
+    <h2>マイページ</h2>
+    <span class="basis">basis: 마이페이지_주문내역O.png</span>
+  </div>
+  
+  <div class="layout">
+    <div class="frame">
+      <div class="notch">━━━</div>
+      
+      <div class="screen-header">
+        <span></span>
+        <h3>マイページ</h3>
+        <div class="actions">⌕ 🛒</div>
+      </div>
+      
+      <div class="content">
+        
+        <!-- 프로필 -->
+        <div class="mypage-profile">
+          <div class="profile-icon">N</div>
+          <div class="profile-info">
+            <div class="name">Yoo Junsung 様 &nbsp;›</div>
+            <div class="rank">現在のランキング: NEW</div>
+            <div class="rank">あと¥10,000円のご注文で「<strong>BRONZE</strong>」にランクアップ!</div>
+            <a class="link">nugu会員特典を見る</a>
+          </div>
+          <div class="profile-qr"></div>
+        </div>
+        
+        <!-- 4개 정보 박스 -->
+        <div class="info-grid">
+          <div class="info-grid-item">
+            <div class="key">クーポン &nbsp;›</div>
+            <div class="val">3</div>
+          </div>
+          <div class="info-grid-item">
+            <div class="key">ポイント &nbsp;›</div>
+            <div class="val">100,000P</div>
+          </div>
+          <div class="info-grid-item">
+            <div class="key">レビュー &nbsp;›</div>
+            <div class="val">3件</div>
+          </div>
+          <div class="info-grid-item">
+            <div class="key">お客様へのお知らせ &nbsp;›</div>
+            <div class="val">5</div>
+          </div>
+        </div>
+        
+        <!-- ご注文履歴 -->
+        <div>
+          <div class="sec-head-row">
+            <span>ご注文履歴 <span style="font-size: 11px; color: var(--text-soft); font-weight: 400;">(最近1ヶ月)</span></span>
+            <span class="view-all">すべて見る &nbsp;›</span>
+          </div>
+          
+          <!-- ✦ 변경: 다중 배송유형 표시 ✦ -->
+          <div class="history-card">
+            <div class="history-card-tags">
+              <span class="tag jp">即日発送(国内)</span>
+              <span class="tag kr">即日発送(韓国)</span>
+              <span class="tag general">通常配送</span>
+              <span class="changed-marker">CHANGED</span>
+            </div>
+            <div class="history-card-info">最短で1〜3日以内に発送予定 &nbsp;(?)</div>
+            <div class="history-card-body">
+              <div class="thumb"></div>
+              <div class="info">
+                <div class="date">2026-03-23</div>
+                <div class="name">[Influencer pick] Satin Flared Skirt - Black Skirt - B lared S...<br>+他 2件</div>
+                <div style="color: var(--accent); font-size: 10px; margin-top: 4px;">決済ページ有効期限<br>2024-11-01 16:17:38</div>
+              </div>
+              <div>
+                <div class="price">¥10,873</div>
+                <div class="status">入金前 3件</div>
+              </div>
+            </div>
+            <div class="multi-shipping-summary">
+              📦 JP: 배송준비중 1件 &nbsp;·&nbsp; 🚛 KR: 배송준비중 1件 &nbsp;·&nbsp; 📦 GE: 배송준비중 1件
+            </div>
+            <div class="history-card-actions">
+              <button class="primary">お支払い</button>
+              <button>注文キャンセル</button>
+            </div>
+          </div>
+          
+          <!-- 단일 배송유형 카드 (As-Is 그대로) -->
+          <div class="history-card">
+            <div class="history-card-tags">
+              <span class="tag jp">即日発送(国内)</span>
+            </div>
+            <div class="history-card-info">最短で1〜3日以内に発送予定 &nbsp;(?)</div>
+            <div class="history-card-body">
+              <div class="thumb"></div>
+              <div class="info">
+                <div class="date">2025-03-23</div>
+                <div class="name">[Influencer pick] Satin Flared Skirt - Black Skirt - B lared S...</div>
+              </div>
+              <div>
+                <div class="price">¥3,645</div>
+                <div class="status">お支払い完了 1</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="history-card">
+            <div class="history-card-tags">
+              <span class="tag jp">即日発送(国内)</span>
+            </div>
+            <div class="history-card-body">
+              <div class="thumb"></div>
+              <div class="info">
+                <div class="date">2025-8-20</div>
+                <div class="name">[Influencer pick] Satin Flared Skirt - Black Skirt - B lared S...</div>
+              </div>
+              <div>
+                <div class="price">¥3,645</div>
+                <div class="status">配送完了 1</div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        
+        <div class="menu-row"><span>キャンセル/交換/返品履歴</span><span class="arrow">すべて見る &nbsp;›</span></div>
+        
+        <div style="background: var(--bg); padding: 20px 16px;">
+          <div class="sec-head-row" style="padding: 0;">
+            <span>最近チェックした商品</span>
+            <span class="view-all">すべて見る &nbsp;›</span>
+          </div>
+        </div>
+        
+        <div class="menu-row"><span>通知設定</span><span class="arrow">&nbsp;›</span></div>
+        <div class="menu-row"><span>預り金の確認</span><span class="arrow">&nbsp;›</span></div>
+        <div class="menu-row"><span>ログアウト</span><span class="arrow">&nbsp;›</span></div>
+        
+        <!-- Bottom tab bar -->
+        <div class="bottom-tabs">
+          <div class="bottom-tab"><span class="icon"></span>ホーム</div>
+          <div class="bottom-tab"><span class="icon"></span>ショップ</div>
+          <div class="bottom-tab"><span class="icon"></span>探す</div>
+          <div class="bottom-tab"><span class="icon"></span>いいね</div>
+          <div class="bottom-tab active"><span class="icon"></span>マイページ</div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <div class="notes-panel">
+      <h3>CHANGE NOTES · マイページ</h3>
+      <ul class="change-list">
+        <li>
+          <span class="change-num">01</span><span class="change-title">ご注文履歴 카드 — 다중 배송유형 표시</span>
+          <div class="change-detail">
+            정책서: "주문 1건 안에 배송유형 multiple 구성"
+            <div class="asis"><strong>AS-IS</strong>주문 카드에 배송유형 태그 1개 (예: "即日発送(国内)") + 단일 상품명 + 단일 상태</div>
+            <div class="tobe"><strong>TO-BE</strong>합주문 카드: 배송유형 태그 multiple (예: JP / KR / GE 3개) + 대표 상품명 + "+他 X件" + 합산 금액 + 배송유형별 상태 요약 라인</div>
+          </div>
+        </li>
+        <li>
+          <span class="change-num">02</span><span class="change-title">상태 표기</span>
+          <div class="change-detail">
+            <div class="asis"><strong>AS-IS</strong>"入金前1件" / "お支払い完了1" / "配送完了1" (단일 상태)</div>
+            <div class="tobe"><strong>TO-BE</strong>합주문이면 ShippingGroup별 상태 요약: "JP: 배송준비중 1件 · KR: 배송준비중 1件 · GE: 배송준비중 1件". 단일 배송유형 주문(과거)은 As-Is 그대로</div>
+          </div>
+        </li>
+        <li>
+          <span class="change-num">03</span><span class="change-title">액션 버튼</span>
+          <div class="change-detail">
+            <div class="asis"><strong>AS-IS</strong>주문 단위 "お支払い" / "注文キャンセル" (모든 배송유형 일괄)</div>
+            <div class="tobe"><strong>TO-BE</strong>결제 미완료 상태는 주문 단위 동일 / 결제 완료 후 부분 액션(부분취소·반품)은 주문 상세 페이지에서 ShippingGroup별 처리 (정책서: "배송유형별 부분취소·부분반품·환불 가능")</div>
+          </div>
+        </li>
+      </ul>
+      
+      <div class="preservation">
+        <h4>유지되는 영역</h4>
+        <ul>
+          <li>프로필 영역 (N 아이콘 / 이름 / ランキング / QR)</li>
+          <li>4개 정보 박스 (クーポン·ポイント·レビュー·お知らせ)</li>
+          <li>キャンセル/交換/返品履歴 메뉴</li>
+          <li>最近チェックした商品 캐러셀</li>
+          <li>通知設定·預り金の確認·ログアウト 메뉴</li>
+          <li>하단 탭바 (ホーム / ショップ / 探す / いいね / マイページ)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================ Screen 3: ご注文履歴 (별도 페이지) ================ -->
+<div class="screen-section">
+  <div class="screen-section-header">
+    <span class="num">SCREEN 03</span>
+    <h2>ご注文履歴</h2>
+    <span class="basis">basis: こ_注文全体.png</span>
+  </div>
+  
+  <div class="layout">
+    <div class="frame">
+      <div class="notch">━━━</div>
+      
+      <div class="screen-header">
+        <span class="back">←</span>
+        <h3>ご注文履歴</h3>
+        <div class="actions">⌕ 🛒</div>
+      </div>
+      
+      <div class="content">
+        
+        <div class="order-tabs">
+          <div class="order-tab active">ご注文全体</div>
+          <div class="order-tab">キャンセル/交換/返品</div>
+        </div>
+        
+        <div class="order-filter">
+          <span class="count">2件</span>
+          <div class="filters">
+            <span class="filter">注文状態全体 ∨</span>
+            <span class="filter">期間全体 ∨</span>
+          </div>
+        </div>
+        
+        <!-- 합주문 카드 -->
+        <div class="history-card">
+          <div class="history-card-tags">
+            <span class="tag jp">即日発送(国内)</span>
+            <span class="tag kr">即日発送(韓国)</span>
+            <span class="tag general">通常配送</span>
+            <span class="changed-marker">CHANGED</span>
+          </div>
+          <div class="history-card-body">
+            <div class="thumb"></div>
+            <div class="info">
+              <div class="date">2026-03-23</div>
+              <div class="name">[Influencer pick] Satin Flared Skirt - Black Skirt - B lared S...<br>+他 2件</div>
+              <div style="color: var(--accent); font-size: 10px; margin-top: 4px;">決済ページ有効期限<br>2024-11-01 16:17:38</div>
+            </div>
+            <div>
+              <div class="price">¥10,873</div>
+              <div class="status">入金前 3件</div>
+            </div>
+          </div>
+          <div class="multi-shipping-summary">
+            📦 JP: 입금전 1件 &nbsp;·&nbsp; 🚛 KR: 입금전 1件 &nbsp;·&nbsp; 📦 GE: 입금전 1件
+          </div>
+          <div class="history-card-actions">
+            <button class="primary">お支払い</button>
+            <button>注文キャンセル</button>
+          </div>
+        </div>
+        
+        <!-- 단일 배송유형 (As-Is) -->
+        <div class="history-card">
+          <div class="history-card-tags">
+            <span class="tag jp">即日発送(国内)</span>
+            <span style="font-size: 10px; color: var(--text-mute); margin-left: 4px;">(?)</span>
+          </div>
+          <div class="history-card-body">
+            <div class="thumb"></div>
+            <div class="info">
+              <div class="date">2025-10-20</div>
+              <div class="name">[Influencer pick] Satin Flared Skirt - Black Skirt - B lared S...</div>
+            </div>
+            <div>
+              <div class="price">¥3,645</div>
+              <div class="status">配送完了 1</div>
+            </div>
+          </div>
+        </div>
+        
+        <div style="height: 200px;"></div>
+        
+        <!-- 카테고리·하단 -->
+        <div style="padding: 14px 16px; font-size: 11px; color: var(--text-soft); border-top: 1px solid var(--line-soft);">
+          1カテゴリ &nbsp;›&nbsp; 2カテゴリ &nbsp;›&nbsp; 3カテゴリ &nbsp;›&nbsp; 4カテゴリ
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; border-top: 1px solid var(--line-soft);">
+          <div style="padding: 16px; text-align: center; border-right: 1px solid var(--line-soft); font-size: 12px;">お知らせ</div>
+          <div style="padding: 16px; text-align: center; border-right: 1px solid var(--line-soft); font-size: 12px;">FAQ</div>
+          <div style="padding: 16px; text-align: center; font-size: 12px;">ご利用ガイド</div>
+        </div>
+        
+        <div class="menu-row"><span>カスタマーセンター</span><span class="arrow">—</span></div>
+        <div style="padding: 14px 16px; font-size: 13px; background: var(--bg);">
+          <strong>050-5357-6416</strong>(有料) &nbsp;›
+        </div>
+        
+        <div class="bottom-tabs">
+          <div class="bottom-tab"><span class="icon"></span>ホーム</div>
+          <div class="bottom-tab"><span class="icon"></span>ショップ</div>
+          <div class="bottom-tab"><span class="icon"></span>探す</div>
+          <div class="bottom-tab"><span class="icon"></span>いいね</div>
+          <div class="bottom-tab active"><span class="icon"></span>マイページ</div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <div class="notes-panel">
+      <h3>CHANGE NOTES · ご注文履歴</h3>
+      <ul class="change-list">
+        <li>
+          <span class="change-num">01</span><span class="change-title">합주문 카드 — 다중 배송유형 표시</span>
+          <div class="change-detail">
+            마이페이지 #01과 동일 패턴
+            <div class="asis"><strong>AS-IS</strong>주문 카드: 배송유형 태그 1개 + 단일 상품명</div>
+            <div class="tobe"><strong>TO-BE</strong>합주문 카드: 태그 multiple + 대표 상품명 + "+他 X件" + ShippingGroup별 상태 요약</div>
+          </div>
+        </li>
+        <li>
+          <span class="change-num">02</span><span class="change-title">注文状態全体 필터 옵션</span>
+          <div class="change-detail">
+            <div class="asis"><strong>AS-IS</strong>注文状態 = "入金前 / お支払い完了 / 配送完了" 등 (주문 단위)</div>
+            <div class="tobe"><strong>TO-BE 검토 필요</strong>합주문이 부분적으로 상태가 다를 때 (예: JP 배송완료 / KR 배송중) 필터링 기준을 어떻게 정의할지 — §11 #20 협의</div>
+          </div>
+        </li>
+        <li>
+          <span class="change-num">03</span><span class="change-title">주문 상세로 이동 시</span>
+          <div class="change-detail">
+            현 디자인에 주문 상세 페이지가 보이지 않음 — Phase02에서는 주문 상세에 ShippingGroup별 section + 배송 추적/송장/클레임 액션이 ShippingGroup별로 노출 필요 (정책서 BO 영역 + FE 영역 모두 해당)
+          </div>
+        </li>
+      </ul>
+      
+      <div class="preservation">
+        <h4>유지되는 영역</h4>
+        <ul>
+          <li>탭 (ご注文全体 / キャンセル·交換·返品)</li>
+          <li>2件 카운트 + 注文状態·期間 필터</li>
+          <li>주문 카드의 액션 버튼 (お支払い / 注文キャンセル)</li>
+          <li>決済ページ有効期限 안내 (입금 전 주문 한정)</li>
+          <li>하단 카테고리·お知らせ·FAQ·ご利用ガイド</li>
+          <li>カスタマーセンター 050-5357-6416</li>
+          <li>하단 탭바</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================ Summary ================ -->
+<div class="screen-section">
+  <div class="notes-panel" style="max-width: 1200px; margin: 0 auto;">
+    <h3>POLICY MAPPING · 정책 매핑</h3>
+    <p style="font-size: 12px; color: var(--text-soft); line-height: 1.8;">
+      <strong>주문서</strong>: 정책서 "주문서 정책 — 주문 구조 (배송유형별 section 분리)" + "쿠폰 안분 정책 — 주문품목 기준 안분" + "배송 정책 안내 문구" + 본 문서 D02·D17·D18·D23·D26·§3 영역 정합. 명칭 ShippingGroup (v0.34) 적용.<br><br>
+      <strong>마이페이지·주문 이력</strong>: 정책서 "마이페이지 정책 — 주문 1건 안에 배송유형 multiple 구성" + "주문 상세 — 배송유형별 section 분리 노출" + "클레임 — 배송유형별 부분취소/부분반품/환불 가능" + 본 문서 §11 #20 (FO·BO·마이페이지 UI 구조 협의) 영역.<br><br>
+      모든 화면 §11 #20 협의에서 디자인 단계로 진입 — CX팀·BO 개발팀·FE·기획·디자인 참여자.
+    </p>
+  </div>
+</div>
+
+</body>
+</html>
